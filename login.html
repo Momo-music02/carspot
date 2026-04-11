@@ -1,0 +1,59 @@
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (firebase && firebase.auth) {
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            window.location.replace('index.html');
+          }
+        });
+      }
+    });
+  </script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - CarSpot</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="firebase-config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <img class="apple-logo" src="src/logo.png" alt="Logo CarSpot" />
+    <h1>Connexion à CarSpot</h1>
+    <div id="login-box">
+      <h2>Connexion</h2>
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Mot de passe" required />
+      <button onclick="login()">Se connecter</button>
+      <p>Pas de compte ? <a href="#" onclick="showRegister()">Créer un compte</a></p>
+      <div id="login-error-message"></div>
+    </div>
+    <div id="register-box" style="display:none;">
+      <h2>Créer un compte</h2>
+      <input type="text" id="register-nom" placeholder="Nom" required />
+      <input type="text" id="register-prenom" placeholder="Prénom" required />
+      <input type="email" id="register-email" placeholder="Email" required />
+      <input type="password" id="register-password" placeholder="Mot de passe" required />
+      <button onclick="register()">Créer un compte</button>
+      <p>Déjà un compte ? <a href="#" onclick="showLogin()">Se connecter</a></p>
+      <div id="register-error-message"></div>
+    </div>
+  </div>
+  <script src="auth.js"></script>
+  <script>
+    function showRegister() {
+      document.getElementById('login-box').style.display = 'none';
+      document.getElementById('register-box').style.display = 'block';
+    }
+    function showLogin() {
+      document.getElementById('login-box').style.display = 'block';
+      document.getElementById('register-box').style.display = 'none';
+    }
+    // Plus de redirection automatique après connexion
+  </script>
+</body>
+</html>

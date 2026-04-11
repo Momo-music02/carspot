@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon compte - CarSpot</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="firebase-config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Mon compte</h1>
+    <form id="account-form" style="display:none;">
+      <label>Nom</label>
+      <input type="text" id="account-nom" required />
+      <label>Prénom</label>
+      <input type="text" id="account-prenom" required />
+      <label>Email</label>
+      <input type="email" id="account-email" required disabled />
+      <button type="button" onclick="updateAccount()">Enregistrer les modifications</button>
+      <div id="account-message"></div>
+    </form>
+    <button onclick="logout()">Se déconnecter</button>
+  </div>
+  <script src="account.js"></script>
+</body>
+</html>
