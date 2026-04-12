@@ -213,3 +213,34 @@ button:active { opacity: 0.7; }
   margin-left: 33%;  
   border: 1px solid rgba(128, 128, 128, 0.1);
 }
+
+/* --- Affichage voiture en ligne dans une liste --- */
+.car-inline-container {
+  background: var(--card-bg);
+  border-radius: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.car-inline-container:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+.car-inline-content {
+  display: flex;
+  align-items: center;
+}
+.car-inline-photo {
+  width: 70px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 16px;
+  background: #eee;
+}
+.car-inline-model {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: var(--text);
+}

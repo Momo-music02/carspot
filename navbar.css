@@ -1,7 +1,12 @@
 .nav-emoji {
   display: none;
   font-size: 1.1em;
-  margin-top: 1px;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 1.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
  :root {
   --primary: #007aff;
@@ -38,8 +43,9 @@ body {
   border-radius: 32px;
   box-shadow: var(--nav-shadow);
   z-index: 1000;
-  padding: 0 8px;
   margin-bottom: 14px;
+  margin-left: 8px;
+  margin-right: 8px;
   border: 1px solid rgba(128,128,128,0.08);
 }
 .navbar ul {
@@ -51,6 +57,7 @@ body {
   margin: 0;
   width: 100%;
   height: 64px;
+  margin-bottom: 13px;
 }
 .navbar ul li {
   flex: 1 1 0;
@@ -96,11 +103,12 @@ body {
   min-height: 58px;
   max-width: 58px;
   max-height: 58px;
+  margin-top: 5px;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.7rem;
-  margin-top: -22px;
   box-shadow: 0 6px 18px rgba(0,122,255,0.18);
   border: 4px solid var(--bg);
   z-index: 2;
@@ -120,6 +128,7 @@ body {
     border-radius: 18px;
     margin-bottom: 6px;
     padding: 0 2px;
+    margin-right: 10px
   }
   .navbar ul {
     height: 54px;
@@ -146,9 +155,13 @@ body {
     display: none;
   }
   .navbar ul li a .nav-emoji {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1.25em;
-    margin-top: 1px;
+    height: 100%;
+    margin: 0 auto;
+    min-height: 1.4em;
   }
 }
 
