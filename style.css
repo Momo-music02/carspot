@@ -1,79 +1,215 @@
+:root {
+  /* Couleurs de base */
+  --primary: #007aff;
+  --bg: #f2f2f7;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --text: #1c1c1e;
+  --gray: #8e8e93;
+  --error: #ff3b30;
+  
+  /* Structure */
+  --radius: 2.4rem;
+  --safe-margin: 16px;
+}
+
+/* Mode Sombre Automatique */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --card-bg: rgba(28, 28, 30, 0.85);
+    --text: #ffffff;
+    --gray: #a1a1a6;
+  }
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-  background: #f2f2f7;
   margin: 0;
-  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  background-attachment: fixed;
+  background-size: cover;
+  transition: background-color 0.3s;
 }
-.container {
-  max-width: 370px;
-  margin: 80px auto;
-  background: #fff;
-  border-radius: 28px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-  padding: 40px 32px 32px 32px;
-  text-align: center;
-  position: relative;
+
+#app-content {
+  padding: 24px var(--safe-margin) 100px var(--safe-margin);
+  max-width: 600px;
+  margin: 0 auto;
 }
-.apple-logo {
-  width: 100px;
-  margin-bottom: 18px;
-  opacity: 0.8;
+
+/* --- TEXTES --- */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
-h1, h2 {
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 18px;
+
+p { font-size: 0.95rem; color: var(--text); }
+
+/* --- FORMULAIRES (glass-form) --- */
+.glass-form {
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid rgba(128, 128, 128, 0.1);
 }
-input {
+
+input, select, textarea {
   width: 100%;
-  padding: 14px 16px;
-  margin: 12px 0;
-  border: none;
-  border-radius: 14px;
-  background: #f2f2f7;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  background: rgba(128, 128, 128, 0.05);
+  color: var(--text);
   font-size: 1rem;
   box-sizing: border-box;
-  outline: none;
-  transition: box-shadow 0.2s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
+
 input:focus {
-  box-shadow: 0 0 0 2px #007aff33;
+  outline: none;
+  border-color: var(--primary);
 }
+
+/* Boutons classiques */
 button {
   width: 100%;
-  padding: 14px 0;
-  margin: 16px 0 8px 0;
+  padding: 14px;
+  border-radius: 12px;
   border: none;
-  border-radius: 14px;
-  background: #000;
-  color: #fff;
+  background: var(--primary);
+  color: white;
   font-weight: 600;
-  font-size: 1.08rem;
   cursor: pointer;
-  letter-spacing: 0.02em;
-  transition: background 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-button:hover {
-  background: #222;
-}
-a {
-  color: #007aff;
-  text-decoration: none;
-  font-weight: 500;
-}
-a:hover {
-  text-decoration: underline;
-}
-#login-error-message, #register-error-message {
-  color: #e74c3c;
   margin-top: 10px;
-  min-height: 18px;
+  transition: opacity 0.2s;
 }
-@media (max-width: 500px) {
-  .container {
-    max-width: 98vw;
-    padding: 18px 4vw;
-  }
+
+button:active { opacity: 0.7; }
+
+/* --- GRILLE ET CARTES DE VOITURES --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.car-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(128, 128, 128, 0.1);
+  cursor: pointer;
+}
+
+.car-img {
+  width: 100%;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+}
+
+.car-info {
+  padding: 10px;
+}
+
+.car-info strong {
+  display: block;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.car-info span {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+/* --- LISTES (list-item) --- */
+.list-item {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+/* --- PAGE DE DÉTAIL --- */
+.detail-img {
+  width: 100%;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* --- NAVBAR FIXE --- */
+.navbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 70px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 0.5px solid rgba(128, 128, 128, 0.2);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 1000;
+}
+
+.navbar button {
+  background: none !important;
+  color: var(--gray);
+  width: auto;
+  padding: 10px;
+  margin: 0;
+  font-size: 1.4rem;
+  flex: 1;
+}
+
+.navbar button.selected {
+  color: var(--primary);
+}
+
+/* Bouton central flottant */
+.nav-plus {
+  background: var(--primary) !important;
+  color: white !important;
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 28px !important;
+  margin-top: -35px !important;
+  box-shadow: 0 5px 15px rgba(0, 122, 255, 0.4);
+  border: 4px solid var(--bg) !important;
+  flex: none !important;
+  font-size: 1.8rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- LOADER --- */
+.loader {
+  text-align: center;
+  padding: 50px;
+  font-style: italic;
+  color: var(--gray);
+}
+
+.auth-container {
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 24px;
+  border-radius: var(--radius);
+  max-width: 400px;
+  margin-top: 150px;
+  margin-left: 33%;  
+  border: 1px solid rgba(128, 128, 128, 0.1);
 }

@@ -5,7 +5,9 @@ function login() {
   const password = document.getElementById('login-password').value;
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      window.location.href = 'index.html';
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect') || 'index.html';
+      window.location.href = redirect;
     })
     .catch((error) => {
       document.getElementById('login-error-message').innerText = error.message;
@@ -26,7 +28,9 @@ function register() {
       });
     })
     .then(() => {
-      window.location.href = 'account.html';
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect') || 'index.html';
+      window.location.href = redirect;
     })
     .catch((error) => {
       document.getElementById('register-error-message').innerText = error.message;

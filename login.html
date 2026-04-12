@@ -1,14 +1,3 @@
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      if (firebase && firebase.auth) {
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (user) {
-            window.location.replace('index.html');
-          }
-        });
-      }
-    });
-  </script>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -16,44 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion - CarSpot</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="firebase-config.js"></script>
+  <link rel="stylesheet" href="navbar.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
-<body>
-  <div class="container">
-    <img class="apple-logo" src="src/logo.png" alt="Logo CarSpot" />
-    <h1>Connexion à CarSpot</h1>
-    <div id="login-box">
-      <h2>Connexion</h2>
-      <input type="email" id="login-email" placeholder="Email" required />
-      <input type="password" id="login-password" placeholder="Mot de passe" required />
-      <button onclick="login()">Se connecter</button>
-      <p>Pas de compte ? <a href="#" onclick="showRegister()">Créer un compte</a></p>
-      <div id="login-error-message"></div>
-    </div>
-    <div id="register-box" style="display:none;">
-      <h2>Créer un compte</h2>
-      <input type="text" id="register-nom" placeholder="Nom" required />
-      <input type="text" id="register-prenom" placeholder="Prénom" required />
-      <input type="email" id="register-email" placeholder="Email" required />
-      <input type="password" id="register-password" placeholder="Mot de passe" required />
-      <button onclick="register()">Créer un compte</button>
-      <p>Déjà un compte ? <a href="#" onclick="showLogin()">Se connecter</a></p>
-      <div id="register-error-message"></div>
-    </div>
+<body class="auth-body">
+
+  <div class="auth-container">
+    <h1 class="logo">CarSpot</h1>
+    <p id="auth-title">Heureux de vous revoir</p>
+
+    <form id="auth-form" class="authform">
+      <div id="register-fields" style="display:none;">
+        <input type="text" id="register-nom" placeholder="Nom" autocomplete="family-name">
+        <input type="text" id="register-prenom" placeholder="Prénom" autocomplete="given-name">
+      </div>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <button type="submit" id="auth-btn">Se connecter</button>
+    </form>
+
+    <p class="auth-switch">
+      <span id="switch-text">Pas encore de compte ?</span> 
+      <a href="#" id="toggle-auth">S'inscrire</a>
+    </p>
+    <div id="error-msg" style="color: red; margin-top: 10px; font-size: 0.9em;"></div>
   </div>
-  <script src="auth.js"></script>
+
   <script>
-    function showRegister() {
-      document.getElementById('login-box').style.display = 'none';
-      document.getElementById('register-box').style.display = 'block';
-    }
-    function showLogin() {
-      document.getElementById('login-box').style.display = 'block';
-      document.getElementById('register-box').style.display = 'none';
-    }
-    // Plus de redirection automatique après connexion
+    const firebaseConfig = {
+      apiKey: "AIzaSyBR_uHqxZhdIIHzhWyFNQaAQZ8uHyXf20c",
+      authDomain: "carspot-d6ff9.firebaseapp.com",
+      projectId: "carspot-d6ff9",
+      storageBucket: "carspot-d6ff9.appspot.com",
+      messagingSenderId: "1020332551922",
+      appId: "1:1020332551922:web:7ab8a7bbd808f674d52a6b"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const form = document.getElementById('auth-form');
+    const toggleBtn = document.getElementById('toggle-auth');
+    let isLogin = true;
+
+    // Basculer entre Connexion et Inscription
+    toggleBtn.onclick = (e) => {
+      e.preventDefault();
+      isLogin = !isLogin;
+      document.getElementById('auth-title').innerText = isLogin ? "Heureux de vous revoir" : "Créer un compte";
+      document.getElementById('auth-btn').innerText = isLogin ? "Se connecter" : "S'inscrire";
+      document.getElementById('switch-text').innerText = isLogin ? "Pas encore de compte ?" : "Déjà un compte ?";
+      toggleBtn.innerText = isLogin ? "S'inscrire" : "Se connecter";
+      document.getElementById('register-fields').style.display = isLogin ? 'none' : 'block';
+    };
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error-msg');
+      if (isLogin) {
+        auth.signInWithEmailAndPassword(email, pass)
+          .then(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirect = urlParams.get('redirect') || 'index.html';
+            window.location.href = decodeURIComponent(redirect);
+          })
+          .catch(err => {
+            errorDiv.innerText = err.message;
+          });
+      } else {
+        const nom = document.getElementById('register-nom').value;
+        const prenom = document.getElementById('register-prenom').value;
+        if (!nom || !prenom) {
+          errorDiv.innerText = "Veuillez renseigner le nom et le prénom.";
+          return;
+        }
+        auth.createUserWithEmailAndPassword(email, pass)
+          .then(async (userCredential) => {
+            await userCredential.user.updateProfile({ displayName: nom + ' ' + prenom });
+            // Création du document utilisateur dans Firestore
+            const db = firebase.firestore();
+            await db.collection('users').doc(userCredential.user.uid).set({
+              nom,
+              prenom,
+              email,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirect = urlParams.get('redirect') || 'index.html';
+            window.location.href = decodeURIComponent(redirect);
+          })
+          .catch(err => {
+            errorDiv.innerText = err.message;
+          });
+      }
+    };
   </script>
+
 </body>
 </html>

@@ -1,38 +1,27 @@
-// Gestion de la page compte utilisateur
-function fillAccountForm(user) {
-  if (!user) return;
-  const [nom, prenom] = (user.displayName || ' ').split(' ');
-  document.getElementById('account-nom').value = nom || '';
-  document.getElementById('account-prenom').value = prenom || '';
-  document.getElementById('account-email').value = user.email || '';
-  document.getElementById('account-form').style.display = 'block';
-}
+import './firebase-config.js'; // Assure que Firebase est initialisé
 
-function updateAccount() {
+export function renderAccountPage() {
   const user = firebase.auth().currentUser;
-  const nom = document.getElementById('account-nom').value;
-  const prenom = document.getElementById('account-prenom').value;
-  user.updateProfile({
-    displayName: nom + ' ' + prenom
-  }).then(() => {
-    document.getElementById('account-message').innerText = 'Modifications enregistrées !';
-  }).catch((error) => {
-    document.getElementById('account-message').innerText = error.message;
-  });
+  const [nom, prenom] = (user.displayName || ' ').split(' ');
+  document.getElementById('app-content').innerHTML = `
+    <h2>Mon compte</h2>
+    <form id="edit-profile">
+      <input type="text" id="acc-nom" value="${nom}" placeholder="Nom" />
+      <input type="text" id="acc-prenom" value="${prenom}" placeholder="Prénom" />
+      <p>Email: ${user.email}</p>
+      <button type="submit">Sauvegarder</button>
+      <button type="button" onclick="firebase.auth().signOut().then(() => location.reload())" style="background:red;">Déconnexion</button>
+    </form>
+    <div id="acc-msg"></div>
+  `;
+  document.getElementById('edit-profile').onsubmit = (e) => {
+    e.preventDefault();
+    const n = document.getElementById('acc-nom').value;
+    const p = document.getElementById('acc-prenom').value;
+    user.updateProfile({ displayName: n + ' ' + p }).then(() => {
+      document.getElementById('acc-msg').innerText = "Profil mis à jour !";
+    }).catch(error => {
+      document.getElementById('acc-msg').innerText = "Erreur: " + error.message;
+    });
+  };
 }
-
-function logout() {
-  firebase.auth().signOut().then(() => {
-    window.location.href = 'login.html';
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-      fillAccountForm(user);
-    } else {
-      window.location.replace('login.html');
-    }
-  });
-});

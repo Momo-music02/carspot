@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réglages - CarSpot</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="navbar.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js" defer></script>
+</head>
+<body>
+  <main id="app-content">
+    <h2>Réglages</h2>
+    <div class="glass-form">
+      <label>Couleur de fond :</label>
+      <input type="color" onchange="updateBg(this.value)">
+      <br><br>
+      <label>Image de fond (URL) :</label>
+      <input type="text" id="bg-url" placeholder="https://...">
+      <button onclick="updateBg(document.getElementById('bg-url').value)">Appliquer</button>
+      <button onclick="localStorage.removeItem('cs-bg'); location.reload();">Défaut</button>
+    </div>
+  </main>
+
+  <nav class="navbar">
+    <ul>
+      <li><a href="liste.html">Listes</a></li>
+      <li><a href="voitures.html">Voitures</a></li>
+      <li><a href="create-car.html" class="createcar">+</a></li>
+      <li><a href="Setting.html">Réglages</a></li>
+      <li><a href="account.html">Compte</a></li>
+    </ul>
+  </nav>
+
+  <script>
+    function updateBg(val) {
+      localStorage.setItem('cs-bg', val);
+      location.reload();
+    }
+  </script>
+</body>
+</html>

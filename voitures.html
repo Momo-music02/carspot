@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compte - CarSpot</title>
+  <title>Mes Voitures - CarSpot</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="navbar.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -14,14 +14,8 @@
 </head>
 <body>
   <main id="app-content">
-    <h2>Mon Compte</h2>
-    <div id="user-info" class="glass-form">
-      <p id="user-email"></p>
-      <input type="text" id="user-displayname" placeholder="Nom d'affichage">
-      <button onclick="saveProfile()">Mettre à jour</button>
-      <hr>
-      <button id="logout-btn" style="background:red; color:white;">Déconnexion</button>
-    </div>
+    <h2>Mes spots</h2>
+    <div id="cars-grid" class="grid"></div>
   </main>
 
   <nav class="navbar">
@@ -38,19 +32,21 @@
     window.onload = () => {
       auth.onAuthStateChanged(user => {
         if(user) {
-          document.getElementById('user-email').innerText = "Email : " + user.email;
-          document.getElementById('user-displayname').value = user.displayName || "";
+          db.collection('cars').where('uid', '==', user.uid).orderBy('createdAt', 'desc').onSnapshot(snap => {
+            const grid = document.getElementById('cars-grid');
+            grid.innerHTML = '';
+            snap.forEach(doc => {
+              const car = doc.data();
+              grid.innerHTML += `
+                <div class="car-card" onclick="window.location.href='car-detail.html?id=${doc.id}'">
+                  <div class="car-img" style="background-image: url('${car.photoURL}')"></div>
+                  <div class="car-info"><strong>${car.title}</strong><span>${car.model}</span></div>
+                </div>`;
+            });
+          });
         }
       });
-      document.getElementById('logout-btn').onclick = () => {
-        auth.signOut();
-      };
     };
-
-    function saveProfile() {
-      const name = document.getElementById('user-displayname').value;
-      auth.currentUser.updateProfile({ displayName: name }).then(() => alert("Profil mis à jour !"));
-    }
   </script>
 </body>
 </html>

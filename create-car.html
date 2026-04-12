@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouveau Spot - CarSpot</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="navbar.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js" defer></script>
+</head>
+<body>
+  <main id="app-content">
+    <h2>Nouveau Spot</h2>
+    <form id="add-car-form" class="glass-form">
+      <input type="file" id="c-file" accept="image/*" required>
+      <input type="text" id="c-title" placeholder="Titre" required>
+      <input type="text" id="c-model" placeholder="Modèle" required>
+      <textarea id="c-desc" placeholder="Description"></textarea>
+      <select id="c-list" required><option value="">Chargement...</option></select>
+      <button type="submit" id="btn-up">Publier</button>
+    </form>
+  </main>
+
+  <nav class="navbar">
+    <ul>
+      <li><a href="liste.html">Listes</a></li>
+      <li><a href="voitures.html">Voitures</a></li>
+      <li><a href="create-car.html" class="createcar">+</a></li>
+      <li><a href="Setting.html">Réglages</a></li>
+      <li><a href="account.html">Compte</a></li>
+    </ul>
+  </nav>
+
+  <script>
+    window.onload = () => {
+      auth.onAuthStateChanged(user => {
+        if(!user) return;
+        db.collection('lists').where('uid', '==', user.uid).get().then(snap => {
+          const sel = document.getElementById('c-list');
+          sel.innerHTML = '<option value="">Choisir une liste</option>';
+          snap.forEach(doc => sel.innerHTML += `<option value="${doc.id}">${doc.data().name}</option>`);
+        });
+      });
+
+      document.getElementById('add-car-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-up');
+        const file = document.getElementById('c-file').files[0];
+        btn.disabled = true;
+
+        try {
+          const ref = storage.ref(`spots/${auth.currentUser.uid}/${Date.now()}_${file.name}`);
+          console.log('Uploading to:', ref.fullPath);
+          const uploadResult = await ref.put(file);
+          console.log('Upload result:', uploadResult);
+          const url = await ref.getDownloadURL();
+          console.log('File URL:', url);
+
+          await db.collection('cars').add({
+            uid: auth.currentUser.uid,
+            title: document.getElementById('c-title').value,
+            model: document.getElementById('c-model').value,
+            desc: document.getElementById('c-desc').value,
+            listId: document.getElementById('c-list').value,
+            photoURL: url,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          window.location.href = 'voitures.html';
+        } catch (err) {
+          alert('Erreur lors de l\'upload ou de la création : ' + err.message);
+          console.error(err);
+          btn.disabled = false;
+        }
+      };
+    };
+  </script>
+</body>
+</html>

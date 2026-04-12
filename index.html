@@ -1,73 +1,298 @@
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      if (firebase && firebase.auth) {
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (!user) {
-            window.location.replace('login.html');
-          }
-        });
-      }
-    });
-  </script>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CarSpot - Connexion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>CarSpot</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="firebase-config.js"></script>
-  <!-- Plus de redirection automatique, page accessible à tous -->
+  <link rel="stylesheet" href="navbar.css">
+  
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  </main>
 <body>
-  <div class="container">
-    <img class="apple-logo" src="data:image/svg+xml;utf8,<svg width='100' height='100' viewBox='0 0 24 24' fill='black' xmlns='http://www.w3.org/2000/svg'><path d='M16.365 1.43c0 1.14-.93 2.07-2.07 2.07-.06 0-.12 0-.18-.01.01-.13.02-.26.02-.39 0-1.14.93-2.07 2.07-2.07.06 0 .12 0 .18.01-.01.13-.02.26-.02.39zm2.09 4.37c-1.14-.13-2.34.66-2.95.66-.62 0-1.56-.64-2.57-.62-1.32.02-2.54.77-3.22 1.96-1.38 2.39-.35 5.93.98 7.87.65.95 1.42 2.01 2.43 1.97.97-.04 1.34-.63 2.51-.63 1.17 0 1.5.63 2.52.61 1.04-.02 1.69-.97 2.33-1.92.41-.6.58-.92.91-1.61-2.39-.91-2.76-4.31.47-5.01-.12-.36-.34-.7-.64-.92-.29-.22-.7-.41-1.08-.41zm-2.02 12.13c-.62 0-1.24.18-1.98.18-.74 0-1.39-.17-2.01-.18-1.41-.03-2.7-.81-3.42-2.06-.98-1.7-.7-4.18.7-5.53.48-.46 1.13-.75 1.8-.75.53 0 1.09.18 1.7.18.61 0 1.13-.18 1.7-.18.67 0 1.32.29 1.8.75 1.4 1.35 1.68 3.83.7 5.53-.72 1.25-2.01 2.03-3.41 2.06z'/></svg>" alt="Apple Logo" />
-    <h1>Bienvenue sur CarSpot</h1>
-    <p style="color:#555;margin-bottom:28px;">L'application de spotting automobile moderne et sécurisée.<br>Connecte-toi ou crée un compte pour accéder à toutes les fonctionnalités.</p>
-    <div id="user-box" style="display:none;">
-      <div style="margin-bottom:18px;">
-        <strong id="user-nom"></strong><br>
-        <span id="user-email" style="color:#888;font-size:0.98em;"></span>
-      </div>
-      <button onclick="window.location.href='account.html'">Mon compte</button>
-      <button onclick="logout()">Se déconnecter</button>
-    </div>
-    <div id="guest-box" style="display:none;">
-      <button onclick="window.location.href='login.html'">Se connecter</button>
-      <button onclick="window.location.href='login.html'">Créer un compte</button>
-    </div>
+<style>
+  h1 {
+    margin-top: 50px;
+    font-size: 1.8rem;
+    color: var(--text);
+    text-align: center;
+  } 
+
+  .logo {
+    font-size: 2.4rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+    
+  }
+
+  .logo img {
+    width: 500px;
+    height: 500px;
+    margin-right: 8px;
+  }
+      .logo-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+        margin-top: 30px;
+      }
+      .logo-center img {
+        width: 320px;
+        height: 320px;
+        margin-bottom: 32px;
+        opacity: 0.96;
+        filter: drop-shadow(0 8px 40px rgba(0,0,0,0.13));
+        display: block;
+        max-width: 90vw;
+        max-height: 50vh;
+      }
+      .logo-center h1 {
+        font-size: 2.2rem;
+        color: var(--primary);
+        text-align: center;
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+</style>
+  <nav class="navbar">
+    <ul>
+      <li><a href="liste.html">Listes</a></li>
+      <li><a href="voitures.html">Voitures</a></li>
+      <li><a href="create-car.html" class="createcar">+</a></li>
+      <li><a href="Setting.html">Réglages</a></li>
+      <li><a href="account.html">Compte</a></li>
+    </ul>
+  </nav>
+
+  <div class="logo-center">
+    <img src="carspot.svg" alt="Logo de CarSpot">
+    <h1>Bienvenue sur CarSpot !</h1>
   </div>
-  <script src="auth.js"></script>
   <script>
-    function showUser(user) {
-      document.getElementById('user-box').style.display = 'block';
-      document.getElementById('guest-box').style.display = 'none';
-      // Affichage nom/prénom/email
-      if(user.displayName) {
-        document.getElementById('user-nom').innerText = user.displayName;
-      } else {
-        document.getElementById('user-nom').innerText = '';
+    // Configuration Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyBR_uHqxZhdIIHzhWyFNQaAQZ8uHyXf20c",
+      authDomain: "carspot-d6ff9.firebaseapp.com",
+      projectId: "carspot-d6ff9",
+      storageBucket: "carspot-d6ff9.appspot.com",
+      messagingSenderId: "1020332551922",
+      appId: "1:1020332551922:web:7ab8a7bbd808f674d52a6b",
+      measurementId: "G-YCVWCRSW91",
+    };
+    firebase.initializeApp(firebaseConfig);
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('id')) {
+          showPage('car-detail');
+        } else {
+          showPage('cars');
+        }
+      
+
+    // Système de navigation SPA (Single Page Application)
+    async function showPage(page) {
+      const container = document.getElementById('app-content');
+      container.innerHTML = '<div class="loader">Chargement...</div>';
+      
+      // Mise à jour de l'UI des boutons
+      document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('selected'));
+      const activeBtn = document.getElementById('nav-' + page);
+      if (activeBtn) activeBtn.classList.add('selected');
+
+      switch(page) {
+        case 'lists': renderListsPage(); break;
+        case 'cars': renderCarsPage(); break;
+        case 'add': renderAddCarPage(); break;
+        case 'settings': renderSettingsPage(); break;
+        case 'account': renderAccountPage(); break;
+        case 'car-detail': renderCarDetailPage(); break;
       }
-      document.getElementById('user-email').innerText = user.email;
     }
-    function showGuest() {
-      document.getElementById('user-box').style.display = 'none';
-      document.getElementById('guest-box').style.display = 'block';
+
+    // --- FONCTIONS DE RENDU ---
+
+    function renderListsPage() {
+      const user = auth.currentUser;
+      document.getElementById('app-content').innerHTML = `
+        <h2>Mes listes</h2>
+        <form id="add-list-form" class="glass-form">
+          <input type="text" id="l-name" placeholder="Nom de la collection (ex: Supercars)" required>
+          <input type="text" id="l-desc" placeholder="Description rapide" required>
+          <button type="submit">Créer la liste</button>
+        </form>
+        <div id="lists-container"></div>
+      `;
+
+      db.collection('lists').where('uid', '==', user.uid).onSnapshot(snap => {
+        const div = document.getElementById('lists-container');
+        if(!div) return;
+        div.innerHTML = '';
+        snap.forEach(doc => {
+          const data = doc.data();
+          div.innerHTML += `
+            <div class="list-item">
+              <strong>${data.name}</strong>
+              <p>${data.desc}</p>
+            </div>`;
+        });
+      });
+
+      document.getElementById('add-list-form').onsubmit = (e) => {
+        e.preventDefault();
+        db.collection('lists').add({
+          uid: user.uid,
+          name: document.getElementById('l-name').value,
+          desc: document.getElementById('l-desc').value,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => e.target.reset());
+      };
     }
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        showUser(user);
-      } else {
-        showGuest();
-      }
-    });
-    function logout() {
-      firebase.auth().signOut().then(() => {
-        window.location.href = 'login.html';
+
+    function renderCarsPage() {
+      const user = auth.currentUser;
+      document.getElementById('app-content').innerHTML = `<h2>Mes spots</h2><div id="cars-grid" class="grid"></div>`;
+      
+      db.collection('cars').where('uid', '==', user.uid).orderBy('createdAt', 'desc').onSnapshot(snap => {
+        const grid = document.getElementById('cars-grid');
+        if(!grid) return;
+        grid.innerHTML = '';
+        snap.forEach(doc => {
+          const car = doc.data();
+          grid.innerHTML += `
+            <div class="car-card" onclick="window.location.href='?id=${doc.id}'">
+              <div class="car-img" style="background-image: url('${car.photoURL}')"></div>
+              <div class="car-info">
+                <strong>${car.title}</strong>
+                <span>${car.model}</span>
+              </div>
+            </div>`;
+        });
       });
     }
+
+    function renderAddCarPage() {
+      const user = auth.currentUser;
+      document.getElementById('app-content').innerHTML = `
+        <h2>Nouveau Spot</h2>
+        <form id="add-car-form" class="glass-form">
+          <label class="file-label">
+            <input type="file" id="c-file" accept="image/*" required>
+            <span>📸 Choisir une photo</span>
+          </label>
+          <input type="text" id="c-title" placeholder="Nom du spot (ex: Ferrari à Paris)" required>
+          <input type="text" id="c-model" placeholder="Modèle précis" required>
+          <textarea id="c-desc" placeholder="Description..."></textarea>
+          <select id="c-list" required><option value="">Chargement des listes...</option></select>
+          <button type="submit" id="btn-up">Enregistrer le spot</button>
+        </form>
+      `;
+
+      // Charger les listes dans le select
+      db.collection('lists').where('uid', '==', user.uid).get().then(snap => {
+        const sel = document.getElementById('c-list');
+        sel.innerHTML = '<option value="">Choisir une liste</option>';
+        snap.forEach(doc => sel.innerHTML += `<option value="${doc.id}">${doc.data().name}</option>`);
+      });
+
+      document.getElementById('add-car-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-up');
+        const file = document.getElementById('c-file').files[0];
+        btn.disabled = true; btn.innerText = "Téléchargement...";
+
+        const ref = storage.ref(`spots/${user.uid}/${Date.now()}_${file.name}`);
+        await ref.put(file);
+        const url = await ref.getDownloadURL();
+
+        await db.collection('cars').add({
+          uid: user.uid,
+          title: document.getElementById('c-title').value,
+          model: document.getElementById('c-model').value,
+          desc: document.getElementById('c-desc').value,
+          listId: document.getElementById('c-list').value,
+          photoURL: url,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showPage('cars');
+      };
+    }
+
+    function renderSettingsPage() {
+      document.getElementById('app-content').innerHTML = `
+        <h2>Réglages</h2>
+        <div class="glass-form">
+          <label>Couleur de fond :</label>
+          <input type="color" onchange="updateBg(this.value)">
+          <br><br>
+          <label>Image de fond (URL) :</label>
+          <input type="text" id="bg-url" placeholder="https://...">
+          <button onclick="updateBg(document.getElementById('bg-url').value)">Appliquer l'image</button>
+          <br>
+          <button onclick="localStorage.removeItem('cs-bg'); location.reload();" style="background:#888">Réinitialiser</button>
+        </div>
+      `;
+    }
+
+    window.updateBg = (val) => {
+      localStorage.setItem('cs-bg', val);
+      location.reload();
+    };
+
+    function renderAccountPage() {
+      const user = auth.currentUser;
+      document.getElementById('app-content').innerHTML = `
+        <h2>Mon Compte</h2>
+        <div class="glass-form">
+          <p><strong>Email :</strong> ${user.email}</p>
+          <input type="text" id="u-name" value="${user.displayName || ''}" placeholder="Nom d'utilisateur">
+          <button onclick="updateProfile()">Mettre à jour le nom</button>
+          <hr>
+          <button onclick="auth.signOut()" style="background:var(--error-color)">Déconnexion</button>
+        </div>
+      `;
+    }
+
+    window.updateProfile = () => {
+      const name = document.getElementById('u-name').value;
+      auth.currentUser.updateProfile({ displayName: name }).then(() => alert("Profil mis à jour !"));
+    };
+
+    function renderCarDetailPage() {
+      const id = new URLSearchParams(window.location.search).get('id');
+      db.collection('cars').doc(id).get().then(doc => {
+        if(!doc.exists) return showPage('cars');
+        const car = doc.data();
+        document.getElementById('app-content').innerHTML = `
+          <button onclick="history.back()" style="width:auto; margin-bottom:15px;">← Retour</button>
+          <img src="${car.photoURL}" class="detail-img">
+          <h2>${car.title}</h2>
+          <p><strong>Modèle:</strong> ${car.model}</p>
+          <p>${car.desc}</p>
+          <button onclick="deleteCar('${id}')" style="background:red">Supprimer ce spot</button>
+        `;
+      });
+    }
+
+    window.deleteCar = (id) => {
+      if(confirm("Supprimer ce spot définitivement ?")) {
+        db.collection('cars').doc(id).delete().then(() => window.location.href = 'index.html');
+      }
+    };
+
+    // Listeners Navbar
+
   </script>
 </body>
 </html>
