@@ -9,5 +9,10 @@ service cloud.firestore {
       allow read, write: if request.auth != null && request.auth.uid == resource.data.uid;
       allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
     }
+    match /users/{userId} {
+      // Un utilisateur peut créer son propre compte (doc)
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+    }
   }
 }
