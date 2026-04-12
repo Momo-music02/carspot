@@ -20,9 +20,17 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-// Appliquer le fond d'écran
+// Appliquer le fond d'écran ou le dégradé sur toutes les pages
+const grad = localStorage.getItem('cs-gradient');
 const bg = localStorage.getItem('cs-bg');
-if (bg) {
+if (grad) {
+  const [c1, c2] = grad.split(',');
+  if (c2 && c2 !== '') {
+    document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+  } else {
+    document.body.style.background = c1;
+  }
+} else if (bg) {
   if (bg.startsWith('#')) document.body.style.backgroundColor = bg;
   else document.body.style.backgroundImage = `url(${bg})`;
 }

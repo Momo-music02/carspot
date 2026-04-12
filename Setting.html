@@ -15,13 +15,16 @@
   <main id="app-content">
     <h2>Réglages</h2>
     <div class="glass-form">
-      <label>Couleur de fond :</label>
-      <input type="color" onchange="updateBg(this.value)">
-      <br><br>
+      <label>Couleur ou dégradé de fond :</label><br>
+      <input type="color" id="color1" value="#007aff"> à
+      <input type="color" id="color2" value=""><br>
+      <small>(Laisse la 2e couleur vide pour une seule couleur)</small><br><br>
+      <button onclick="applyGradient()">Appliquer</button>
+      <button onclick="resetBg()">Défaut</button>
+      <hr>
       <label>Image de fond (URL) :</label>
       <input type="text" id="bg-url" placeholder="https://...">
-      <button onclick="updateBg(document.getElementById('bg-url').value)">Appliquer</button>
-      <button onclick="localStorage.removeItem('cs-bg'); location.reload();">Défaut</button>
+      <button onclick="updateBg(document.getElementById('bg-url').value)">Appliquer l'image</button>
     </div>
   </main>
 
@@ -65,10 +68,46 @@
   </nav>
 
   <script>
+    // Appliquer le dégradé sur la page Setting
+    function setGradientBg(c1, c2) {
+      if (c2 && c2 !== '') {
+        document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+      } else {
+        document.body.style.background = c1;
+      }
+    }
+    // Appliquer le fond depuis le localStorage
+    function applyStoredBg() {
+      const grad = localStorage.getItem('cs-gradient');
+      const img = localStorage.getItem('cs-bg');
+      if (grad) {
+        const [c1, c2] = grad.split(',');
+        setGradientBg(c1, c2);
+        document.getElementById('color1').value = c1;
+        document.getElementById('color2').value = c2 || '';
+      } else if (img) {
+        if (img.startsWith('#')) document.body.style.backgroundColor = img;
+        else document.body.style.backgroundImage = `url(${img})`;
+      }
+    }
+    function applyGradient() {
+      const c1 = document.getElementById('color1').value;
+      const c2 = document.getElementById('color2').value;
+      localStorage.setItem('cs-gradient', `${c1},${c2}`);
+      localStorage.removeItem('cs-bg');
+      setGradientBg(c1, c2);
+    }
     function updateBg(val) {
       localStorage.setItem('cs-bg', val);
+      localStorage.removeItem('cs-gradient');
       location.reload();
     }
+    function resetBg() {
+      localStorage.removeItem('cs-bg');
+      localStorage.removeItem('cs-gradient');
+      location.reload();
+    }
+    applyStoredBg();
   </script>
 </body>
 </html>
