@@ -1,87 +1,78 @@
-// main.js : navigation et redirection sécurisée
-import { renderListsPage } from './lists.js';
-import { renderCarsPage } from './cars.js';
-import { renderAddCarPage } from './addCar.js';
-import { renderAccountPage } from './account.js';
-import { renderCarDetailPage } from './carDetail.js';
 
-export function getQueryParam(name) {
+// main.js : navigation et redirection sécurisée
+
+// On suppose que tous les scripts sont chargés dans l'ordre dans le HTML
+// et que firebase-config.js expose db et auth sur window
+// On expose les fonctions sur window pour usage global
+
+window.renderListsPage = window.renderListsPageImpl || function(){};
+window.renderCarsPage = window.renderCarsPageImpl || function(){};
+window.renderAddCarPage = window.renderAddCarPageImpl || function(){};
+window.renderAccountPage = window.renderAccountPageImpl || function(){};
+window.renderCarDetailPage = window.renderCarDetailPageImpl || function(id){};
+
+
+
+window.getQueryParam = function(name) {
   const url = new URL(window.location.href);
   return url.searchParams.get(name);
 }
 
 function requireAuth(redirectTo) {
-  firebase.auth().onAuthStateChanged(function(user) {
+  window.auth.onAuthStateChanged(function(user) {
     if (!user) {
       window.location.replace('login.html?redirect=' + encodeURIComponent(redirectTo || window.location.pathname));
     } else {
-      // Appliquer les réglages au chargement
-      const bg = localStorage.getItem('cs-bg');
-      if (bg) {
-        if (bg.startsWith('#')) document.body.style.backgroundColor = bg;
-        else document.body.style.backgroundImage = `url(${bg})`;
-      }
-      // Afficher la navbar une fois connecté
-      document.getElementById('main-nav').style.display = 'flex';
-      // Navigation initiale
-      const carId = getQueryParam('id');
-      if (carId) showPage('car-detail');
-      else showPage('cars');
+      if (window.applyStoredBg) window.applyStoredBg();
+      const carId = window.getQueryParam('id');
+      if (carId) window.showPage('car-detail');
+      else window.showPage('cars');
     }
   });
 }
 
-export function showPage(page) {
-  document.getElementById('app-content').innerHTML = '';
-  // Charge la page demandée
+window.showPage = function(page) {
+  // Ne vide pas le contenu si on est déjà sur voitures.html et que la structure existe
+  if (!(page === 'cars' && document.getElementById('cars-grid'))) {
+    document.getElementById('app-content').innerHTML = '';
+  }
   switch(page) {
     case 'lists':
-      renderListsPage(); break;
+      window.renderListsPage(); break;
     case 'cars':
-      renderCarsPage(); break;
+      window.renderCarsPage(); break;
     case 'add':
-      renderAddCarPage(); break;
+      window.renderAddCarPage(); break;
     case 'settings':
-      renderSettingsPage(); break;
+      if (window.renderSettingsPage) window.renderSettingsPage(); break;
     case 'account':
-      renderAccountPage(); break;
+      window.renderAccountPage(); break;
     case 'car-detail':
-      renderCarDetailPage(getQueryParam('id')); break;
+      window.renderCarDetailPage(window.getQueryParam('id')); break;
     default:
-      renderCarsPage(); break;
+      window.renderCarsPage(); break;
   }
 }
 
 // Navigation
-const navMap = {
-  'nav-lists': 'lists',
-  'nav-cars': 'cars',
-  'nav-add': 'add',
-  'nav-settings': 'settings',
-  'nav-account': 'account'
-};
-Object.keys(navMap).forEach(id => {
-  document.getElementById(id).onclick = () => {
-    showPage(navMap[id]);
-    document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('selected'));
-    document.getElementById(id).classList.add('selected');
+try {
+  const navMap = {
+    'nav-lists': 'lists',
+    'nav-cars': 'cars',
+    'nav-add': 'add',
+    'nav-settings': 'settings',
+    'nav-account': 'account'
   };
-});
-
-export function renderSettingsPage() {
-  document.getElementById('app-content').innerHTML = `
-    <h2>Réglages</h2>
-    <label>Couleur du fond :</label>
-    <input type="color" onchange="saveBg(this.value)">
-    <br><br>
-    <label>Image du fond (URL) :</label>
-    <input type="text" id="set-bg-url" placeholder="URL de l'image" onchange="saveBg(this.value)">
-  `;
-}
-
-window.saveBg = (val) => {
-  localStorage.setItem('cs-bg', val);
-  location.reload();
-};
+  Object.keys(navMap).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.onclick = () => {
+        window.showPage(navMap[id]);
+        document.querySelectorAll('.navbar button').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+      };
+    }
+  });
+} catch(e) {}
 
 requireAuth(window.location.pathname);

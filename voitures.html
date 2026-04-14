@@ -8,7 +8,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-  <link rel="manifest" href="/favicon/site.webmanifest">
+  <!-- <link rel="manifest" href="/favicon/site.webmanifest"> -->
   <link rel="shortcut icon" href="favicon/favicon.ico">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CarSpot">
@@ -21,11 +21,13 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js" defer></script>
+  <script src="firebase-config.js"></script>
+  <script src="main.js"></script>
+  <script src="cars.js"></script>
 </head>
 <body>
   <main id="app-content">
-    <h2>Toutes les voitures</h2>
+    <h2>Mes voitures</h2>
     <div style="margin-bottom:10px;">
       <input id="search-car" type="text" placeholder="Rechercher un modèle..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
     </div>
@@ -78,12 +80,6 @@
       </li>
     </ul>
   </nav>
-
-  <script src="cars.js" defer></script>
-  <script>
-    window.onload = () => {
-      if (typeof renderCarsPage === 'function') renderCarsPage();
-    };
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>

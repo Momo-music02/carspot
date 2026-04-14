@@ -1,7 +1,7 @@
-import './firebase-config.js'; // Assure que Firebase est initialisé
+import firebase, { auth } from './firebase-config.js'; // Importe firebase et auth depuis firebase-config.js
 
 export function renderAccountPage() {
-  const user = firebase.auth().currentUser;
+  const user = auth.currentUser; // Utilise auth importé
   const [nom, prenom] = (user.displayName || ' ').split(' ');
   document.getElementById('app-content').innerHTML = `
     <h2>Mon compte</h2>
@@ -10,7 +10,7 @@ export function renderAccountPage() {
       <input type="text" id="acc-prenom" value="${prenom}" placeholder="Prénom" />
       <p>Email: ${user.email}</p>
       <button type="submit">Sauvegarder</button>
-      <button type="button" onclick="firebase.auth().signOut().then(() => location.reload())" style="background:red;">Déconnexion</button>
+      <button type="button" onclick="auth.signOut().then(() => location.reload())" style="background:red;">Déconnexion</button>
     </form>
     <div id="acc-msg"></div>
   `;

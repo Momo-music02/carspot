@@ -2,7 +2,7 @@
   /* Couleurs de base */
   --primary: #007aff;
   --bg: #f2f2f7;
-  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-bg: rgba(255, 255, 255, 0.32);
   --text: #1c1c1e;
   --gray: #8e8e93;
   --error: #ff3b30;
@@ -16,7 +16,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #000000;
-    --card-bg: rgba(28, 28, 30, 0.85);
+    --card-bg: rgba(28, 28, 30, 0.32);
     --text: #ffffff;
     --gray: #a1a1a6;
   }
@@ -50,8 +50,8 @@ p { font-size: 0.95rem; color: var(--text); }
 /* --- FORMULAIRES (glass-form) --- */
 .glass-form {
   background: var(--card-bg);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   padding: 16px;
   border-radius: var(--radius);
   margin-bottom: 20px;
@@ -101,6 +101,8 @@ button:active { opacity: 0.7; }
 .car-card {
   background: var(--card-bg);
   border-radius: var(--radius);
+  -webkit-backdrop-filter: blur(11px);
+  backdrop-filter: blur(11px);
   overflow: hidden;
   border: 1px solid rgba(128, 128, 128, 0.1);
   cursor: pointer;
@@ -133,6 +135,8 @@ button:active { opacity: 0.7; }
 /* --- LISTES (list-item) --- */
 .list-item {
   background: var(--card-bg);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   padding: 16px;
   border-radius: var(--radius);
   margin-bottom: 12px;
@@ -153,8 +157,8 @@ button:active { opacity: 0.7; }
   left: 0; right: 0; bottom: 0;
   height: 70px;
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -204,8 +208,8 @@ button:active { opacity: 0.7; }
 
 .auth-container {
   background: var(--card-bg);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   padding: 24px;
   border-radius: var(--radius);
   max-width: 400px;
@@ -214,9 +218,11 @@ button:active { opacity: 0.7; }
   border: 1px solid rgba(128, 128, 128, 0.1);
 }
 
-/* --- Affichage voiture en ligne dans une liste --- */
+/* --- Affichage voiture en ligne dans une liste ET page voitures --- */
 .car-inline-container {
   background: var(--card-bg);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   border-radius: 14px;
   margin-bottom: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
@@ -243,4 +249,9 @@ button:active { opacity: 0.7; }
   font-size: 1.1em;
   font-weight: 500;
   color: var(--text);
+}
+
+/* Sur la page voitures.html, on veut une voiture par ligne */
+#cars-grid {
+  display: block !important;
 }

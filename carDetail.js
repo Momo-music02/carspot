@@ -1,5 +1,4 @@
-import './firebase-config.js'; // Assure que Firebase est initialisé
-import { db } from './firebase-exports.js';
+import { db } from './firebase-config.js'; // Importe db depuis firebase-config.js
 import { showPage, getQueryParam } from './main.js'; // Importe showPage et getQueryParam depuis main.js
 
 export function renderCarDetailPage(id) {

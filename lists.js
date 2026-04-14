@@ -1,11 +1,11 @@
-import './firebase-config.js';
-import { db } from './firebase-exports.js';
+import firebase, { db, auth } from './firebase-config.js'; // Importe firebase, db, auth depuis firebase-config.js
 
 export function renderListsPage() {
-  const user = firebase.auth().currentUser;
+  const user = auth.currentUser; // Utilise auth importé
   if (!user) return;
 
   document.getElementById('app-content').innerHTML = `
+    <button onclick="window.location.href='index.html'">← Retour</button>
     <h2>Mes listes</h2>
     <form id="add-list-form">
       <input type="text" id="list-name" placeholder="Nom de la liste" required />
@@ -41,7 +41,7 @@ export function renderListsPage() {
       uid: user.uid,
       name,
       desc,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp() // Utilise firebase importé
     }).then(() => {
       document.getElementById('add-list-message').innerText = 'Liste ajoutée !';
       document.getElementById('add-list-form').reset();

@@ -30,12 +30,25 @@
       <input type="color" id="color1" value="#007aff"> à
       <input type="color" id="color2" value=""><br>
       <small>(Laisse la 2e couleur vide pour une seule couleur)</small><br><br>
+      <label>Animation du dégradé : <input type="checkbox" id="animate-gradient"></label><br><br>
       <button onclick="applyGradient()">Appliquer</button>
       <button onclick="resetBg()">Défaut</button>
       <hr>
-      <label>Image de fond (URL) :</label>
-      <input type="text" id="bg-url" placeholder="https://...">
-      <button onclick="updateBg(document.getElementById('bg-url').value)">Appliquer l'image</button>
+      <label>Image de fond :</label>
+      <input type="file" id="bg-file" accept="image/*"><br>
+      <button onclick="uploadBgImage()">Uploader et appliquer</button>
+      <button onclick="removeBgImage()" style="background:#ff4444;color:#fff;margin-left:8px;">Supprimer l'image</button>
+          
+      <hr>
+      <label>Couleur du texte :</label>
+      <input type="color" id="text-color" value="#1c1c1e"><br><br>
+      <label>Couleur des titres :</label>
+      <input type="color" id="title-color" value="#1c1c1e"><br><br>
+      <label>Couleur des boutons :</label>
+      <input type="color" id="btn-color" value="#007aff"><br><br>
+      <label>Couleur du texte des boutons :</label>
+      <input type="color" id="btn-text-color" value="#fff"><br><br>
+      <button onclick="applyColors()">Appliquer les couleurs</button>
     </div>
   </main>
 
@@ -80,8 +93,19 @@
 
   <script>
     // Appliquer le dégradé sur la page Setting
-    function setGradientBg(c1, c2) {
-      if (c2 && c2 !== '') {
+    let gradientAnimationInterval = null;
+    function setGradientBg(c1, c2, animate=false) {
+      if (gradientAnimationInterval) {
+        clearInterval(gradientAnimationInterval);
+        gradientAnimationInterval = null;
+      }
+      if (animate && c2 && c2 !== '') {
+        let angle = 0;
+        gradientAnimationInterval = setInterval(() => {
+          angle = (angle + 1) % 360;
+          document.body.style.background = `linear-gradient(${angle}deg, ${c1}, ${c2})`;
+        }, 50);
+      } else if (c2 && c2 !== '') {
         document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
       } else {
         document.body.style.background = c1;
@@ -91,23 +115,62 @@
     function applyStoredBg() {
       const grad = localStorage.getItem('cs-gradient');
       const img = localStorage.getItem('cs-bg');
+      const animate = localStorage.getItem('cs-animate-gradient') === 'true';
       if (grad) {
         const [c1, c2] = grad.split(',');
-        setGradientBg(c1, c2);
+        setGradientBg(c1, c2, animate);
         document.getElementById('color1').value = c1;
         document.getElementById('color2').value = c2 || '';
+        document.getElementById('animate-gradient').checked = animate;
       } else if (img) {
         if (img.startsWith('#')) document.body.style.backgroundColor = img;
         else document.body.style.backgroundImage = `url(${img})`;
       }
+      // Appliquer couleurs texte/bouton/titres
+      const textColor = localStorage.getItem('cs-text-color');
+      const titleColor = localStorage.getItem('cs-title-color');
+      const btnColor = localStorage.getItem('cs-btn-color');
+      const btnTextColor = localStorage.getItem('cs-btn-text-color');
+      if (textColor) document.body.style.color = textColor;
+      if (titleColor) {
+        document.querySelectorAll('h1,h2,h3').forEach(t => t.style.color = titleColor);
+        document.getElementById('title-color').value = titleColor;
+      }
+      if (btnColor) {
+        document.querySelectorAll('button').forEach(b => b.style.background = btnColor);
+        document.getElementById('btn-color').value = btnColor;
+      }
+      if (btnTextColor) {
+        document.querySelectorAll('button').forEach(b => b.style.color = btnTextColor);
+        document.getElementById('btn-text-color').value = btnTextColor;
+      }
+      if (textColor) document.getElementById('text-color').value = textColor;
     }
     function applyGradient() {
       const c1 = document.getElementById('color1').value;
       const c2 = document.getElementById('color2').value;
+      const animate = document.getElementById('animate-gradient').checked;
       localStorage.setItem('cs-gradient', `${c1},${c2}`);
+      localStorage.setItem('cs-animate-gradient', animate);
       localStorage.removeItem('cs-bg');
-      setGradientBg(c1, c2);
+      setGradientBg(c1, c2, animate);
     }
+        function applyColors() {
+          const textColor = document.getElementById('text-color').value;
+          const titleColor = document.getElementById('title-color').value;
+          const btnColor = document.getElementById('btn-color').value;
+          const btnTextColor = document.getElementById('btn-text-color').value;
+          localStorage.setItem('cs-text-color', textColor);
+          localStorage.setItem('cs-title-color', titleColor);
+          localStorage.setItem('cs-btn-color', btnColor);
+          localStorage.setItem('cs-btn-text-color', btnTextColor);
+          document.body.style.color = textColor;
+          document.querySelectorAll('h1,h2,h3').forEach(t => t.style.color = titleColor);
+          document.querySelectorAll('button').forEach(b => {
+            b.style.background = btnColor;
+            b.style.color = btnTextColor;
+          });
+        }
     function updateBg(val) {
       localStorage.setItem('cs-bg', val);
       localStorage.removeItem('cs-gradient');
@@ -118,7 +181,25 @@
       localStorage.removeItem('cs-gradient');
       location.reload();
     }
+    function uploadBgImage() {
+      const fileInput = document.getElementById('bg-file');
+      const file = fileInput.files[0];
+      if (!file) return alert('Sélectionne une image.');
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        localStorage.setItem('cs-bg', dataUrl);
+        localStorage.removeItem('cs-gradient');
+        location.reload();
+      };
+      reader.readAsDataURL(file);
+    }
     applyStoredBg();
+
+    function removeBgImage() {
+            localStorage.removeItem('cs-bg');
+            location.reload();
+          }
   </script>
 </body>
 </html>

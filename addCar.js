@@ -1,5 +1,4 @@
-import './firebase-config.js'; // Assure que Firebase est initialisé
-import { db, storage } from './firebase-exports.js';
+import { db, storage, auth } from './firebase-config.js'; // Importe db, storage, auth depuis firebase-config.js
 import { showPage } from './main.js'; // Importe showPage depuis main.js
 
 export function renderAddCarPage() {
@@ -16,7 +15,7 @@ export function renderAddCarPage() {
     </form>
   `;
   // Charger les listes de l'utilisateur
-  firebase.auth().onAuthStateChanged(function(user) {
+  auth.onAuthStateChanged(function(user) { // Utilise auth importé
     if (!user) return;
     db.collection('lists').where('uid', '==', user.uid).get().then(snapshot => {
       const select = document.getElementById('car-list');
@@ -42,7 +41,7 @@ export function renderAddCarPage() {
     const desc = document.getElementById('car-desc').value;
     const model = document.getElementById('car-model').value;
     const listId = document.getElementById('car-list').value;
-    firebase.auth().onAuthStateChanged(function(user) {
+    auth.onAuthStateChanged(function(user) { // Utilise auth importé
       if (!user) return;
       const storageRef = storage.ref('cars/' + user.uid + '/' + Date.now() + '_' + file.name);
       storageRef.put(file).then(snapshot => {

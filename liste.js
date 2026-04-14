@@ -1,6 +1,7 @@
+// Utilisation des objets globaux exposés par firebase-config.js
 
-window.onload = () => {
-  auth.onAuthStateChanged(user => {
+window.onload = () => { // This window.onload might conflict with DOMContentLoaded in main.js if main.js is also loaded
+  auth.onAuthStateChanged(user => { // Utilise auth importé
     if (!user) return;
     const urlParams = new URLSearchParams(window.location.search);
     const listId = urlParams.get('id');
@@ -14,14 +15,38 @@ window.onload = () => {
         container.innerHTML = '';
         snap.forEach(doc => {
           const data = doc.data();
-          container.innerHTML += `<div class="list-item" style="cursor:pointer" data-id="${doc.id}"><strong>${data.name}</strong><p>${data.desc}</p></div>`;
+          container.innerHTML += `
+            <div class="list-item" style="cursor:pointer;position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;" data-id="${doc.id}">
+              <div style="flex:1" onclick="window.location.href='liste.html?id=${doc.id}'">
+                <strong>${data.name}</strong>
+                <p>${data.desc}</p>
+              </div>
+                <button class="edit-list-btn" data-id="${doc.id}" style="background:#007aff;color:#fff;border:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1.2em;cursor:pointer;margin-right:4px;box-shadow:0 2px 8px #0001;transition:background 0.2s;">✏️</button>
+                <button class="delete-list-btn" data-id="${doc.id}" style="background:#ff4444;color:#fff;border:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1.2em;cursor:pointer;box-shadow:0 2px 8px #0001;transition:background 0.2s;">🗑️</button>
+            </div>`;
         });
-        // Ajoute le click pour naviguer vers la liste
-        document.querySelectorAll('.list-item').forEach(item => {
-          item.onclick = () => {
-            window.location.href = `liste.html?id=${item.getAttribute('data-id')}`;
+        // Suppression d'une liste
+        document.querySelectorAll('.delete-list-btn').forEach(btn => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const id = btn.getAttribute('data-id');
+            if (confirm('Supprimer cette liste ?')) {
+              db.collection('lists').doc(id).delete();
+            }
           };
         });
+          // Modification d'une liste
+          document.querySelectorAll('.edit-list-btn').forEach(btn => {
+            btn.onclick = (e) => {
+              e.stopPropagation();
+              const id = btn.getAttribute('data-id');
+              const newName = prompt('Nouveau nom de la liste :');
+              const newDesc = prompt('Nouvelle description de la liste :');
+              if (newName && newName.trim() !== '') {
+                db.collection('lists').doc(id).update({ name: newName, desc: newDesc });
+              }
+            };
+          });
       });
       document.getElementById('add-list-form').onsubmit = (e) => {
         e.preventDefault();
@@ -29,7 +54,7 @@ window.onload = () => {
           uid: user.uid,
           name: document.getElementById('l-name').value,
           desc: document.getElementById('l-desc').value,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          createdAt: firebase.firestore.FieldValue.serverTimestamp() // Utilise firebase importé
         }).then(() => e.target.reset());
       };
     }
@@ -57,9 +82,44 @@ function renderCarsOfList(listId, uid) {
         <div class="car-inline-content">
           <img src="${car.photoURL}" class="car-inline-photo">
           <span class="car-inline-model">${car.model || ''}</span>
+          <button class="move-car-btn" data-id="${doc.id}" style="margin-left:8px;background:#007aff;color:#fff;border:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1em;cursor:pointer;box-shadow:0 2px 8px #0001;transition:background 0.2s;">⇄</button>
+          <button class="delete-car-btn" data-id="${doc.id}" style="margin-left:8px;background:#ff4444;color:#fff;border:none;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1em;cursor:pointer;box-shadow:0 2px 8px #0001;transition:background 0.2s;">🗑️</button>
         </div>
       `;
-      div.onclick = () => openCarPopup(doc.id, car);
+      div.onclick = (e) => {
+        if (e.target.classList.contains('delete-car-btn')) return;
+        openCarPopup(doc.id, car);
+      };
+      // Suppression voiture
+        // Déplacement voiture
+        div.querySelector('.move-car-btn').onclick = (e) => {
+          e.stopPropagation();
+          // Récupère les listes de l'utilisateur
+          db.collection('lists').where('uid', '==', uid).get().then(snap => {
+            let options = '';
+            snap.forEach(listDoc => {
+              options += `<option value="${listDoc.id}" ${car.listId === listDoc.id ? 'selected' : ''}>${listDoc.data().name}</option>`;
+            });
+            const selectHtml = `<select id="move-list-select">${options}</select>`;
+            const modal = document.createElement('div');
+            modal.style = 'position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;z-index:2000;';
+            modal.innerHTML = `<div style='background:#fff;padding:24px;border-radius:12px;box-shadow:0 4px 24px #0002;'>Changer de liste :<br>${selectHtml}<br><button id='move-list-btn' style='margin-top:12px;background:#007aff;color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;'>Valider</button></div>`;
+            document.body.appendChild(modal);
+            modal.querySelector('#move-list-btn').onclick = () => {
+              const newListId = modal.querySelector('#move-list-select').value;
+              db.collection('cars').doc(doc.id).update({ listId: newListId });
+              modal.remove();
+            };
+            modal.onclick = (evt) => { if (evt.target === modal) modal.remove(); };
+          });
+        };
+        // Suppression voiture
+        div.querySelector('.delete-car-btn').onclick = (e) => {
+          e.stopPropagation();
+          if (confirm('Supprimer cette voiture ?')) {
+            db.collection('cars').doc(doc.id).delete();
+          }
+        };
       container.appendChild(div);
     });
   });
@@ -156,7 +216,7 @@ function openCarPopup(carId, car) {
     if (files && files.length > 0) {
       try {
         for (let i=0; i<files.length; i++) {
-          const ref = storage.ref(`spots/${auth.currentUser.uid}/${Date.now()}_${files[i].name}`);
+          const ref = storage.ref(`spots/${auth.currentUser.uid}/${Date.now()}_${files[i].name}`); // Utilise storage et auth importés
           await ref.put(files[i]);
           const url = await ref.getDownloadURL();
           photos.push(url);

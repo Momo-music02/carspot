@@ -11,7 +11,7 @@
  :root {
   --primary: #007aff;
   --bg: #f2f2f7;
-  --card-bg: rgba(206, 206, 206, 0.85);
+  --card-bg: rgba(206, 206, 206, 0.391);
   --text: #1c1c1e;
   --gray: #8e8e93;
   --radius: 18px;
@@ -38,8 +38,8 @@ body {
   width: 92vw;
   max-width: 480px;
   background: var(--card-bg);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
   border-radius: 32px;
   box-shadow: var(--nav-shadow);
   z-index: 1000;
