@@ -36,15 +36,25 @@ function setGradientBg(c1, c2, animate=false) {
   }
 }
 
-window.applyStoredBg = function() {
+window.applyStoredBg = async function() {
   // S'assure que le DOM est prêt
   if (!document.body) {
     window.addEventListener('DOMContentLoaded', window.applyStoredBg);
     return;
   }
-  const grad = localStorage.getItem('cs-gradient');
-  const bg = localStorage.getItem('cs-bg');
+  let grad = localStorage.getItem('cs-gradient');
+  let bg = localStorage.getItem('cs-bg');
   const animate = localStorage.getItem('cs-animate-gradient') === 'true';
+  // Si connecté, tente de charger le fond Firestore
+  if (window.auth && window.auth.currentUser) {
+    try {
+      const userDoc = await window.db.collection('users').doc(window.auth.currentUser.uid).get();
+      if (userDoc.exists && userDoc.data().bg) {
+        bg = userDoc.data().bg;
+        localStorage.setItem('cs-bg', bg); // Sync local pour usage offline
+      }
+    } catch (e) { /* ignore erreur réseau */ }
+  }
   if (grad) {
     const [c1, c2] = grad.split(',');
     setGradientBg(c1, c2, animate);

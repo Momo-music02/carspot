@@ -156,7 +156,7 @@ function openCarPopup(carId, car) {
   }
   modal.innerHTML = `
     <div class="modal-content" style="position:relative;">
-      <button id="close-modal" style="position:absolute;top:10px;right:10px;font-size:2.2em;background:none;border:none;cursor:pointer;line-height:1;z-index:10;">✖️</button>
+<button id="close-modal" style="position: absolute; top: 15px; right: 15px; font-size: 2.2em; background: none; border: none; cursor: pointer; line-height: 1; z-index: 10; margin: 0; padding: 0; width: auto; height: auto; display: block;">✖️</button>
       <h3 style="margin-top:0;">Modifier la voiture</h3>
       <div id="photos-carousel">${renderPhotos()}</div>
       <form id="edit-car-form">
@@ -176,7 +176,7 @@ function openCarPopup(carId, car) {
   });
   let content = modal.querySelector('.modal-content');
   Object.assign(content.style, {
-    background: '#fff', padding: '24px', borderRadius: '16px', maxWidth: '350px', width: '90vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', position:'relative'
+    padding: '24px', borderRadius: '16px', maxWidth: '350px', width: '90vw', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', position:'relative'
   });
   document.body.appendChild(modal);
   modal.querySelector('#close-modal').onclick = () => modal.remove();

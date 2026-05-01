@@ -11,8 +11,22 @@ export function renderSettingsPage() {
 }
 
 // Rendre saveBg global pour qu'il puisse être appelé depuis le HTML inline
-window.saveBg = (val) => {
-  if (val === null) localStorage.removeItem('cs-bg');
-  else localStorage.setItem('cs-bg', val);
+window.saveBg = async (val) => {
+  const user = window.auth && window.auth.currentUser;
+  if (user) {
+    // Enregistre dans Firestore (collection 'users', doc = uid)
+    const userRef = window.db.collection('users').doc(user.uid);
+    if (val === null) {
+      await userRef.update({ bg: window.firebase.firestore.FieldValue.delete() });
+      localStorage.removeItem('cs-bg');
+    } else {
+      await userRef.set({ bg: val }, { merge: true });
+      localStorage.setItem('cs-bg', val);
+    }
+  } else {
+    // Fallback localStorage si pas connecté
+    if (val === null) localStorage.removeItem('cs-bg');
+    else localStorage.setItem('cs-bg', val);
+  }
   location.reload();
 };
