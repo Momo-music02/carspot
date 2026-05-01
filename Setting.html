@@ -150,6 +150,10 @@
       const c1 = document.getElementById('color1').value;
       const c2 = document.getElementById('color2').value;
       const animate = document.getElementById('animate-gradient').checked;
+      if (window.auth && window.auth.currentUser && window.db) {
+        const userRef = window.db.collection('users').doc(window.auth.currentUser.uid);
+        userRef.set({ gradient: `${c1},${c2}`, animateGradient: !!animate }, { merge: true });
+      }
       localStorage.setItem('cs-gradient', `${c1},${c2}`);
       localStorage.setItem('cs-animate-gradient', animate);
       localStorage.removeItem('cs-bg');
