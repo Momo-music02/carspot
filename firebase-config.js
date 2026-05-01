@@ -1,3 +1,35 @@
+// Applique la couleur du theme-color sur toutes les pages (Safari MacOS uniquement)
+window.applyThemeColor = async function(color) {
+  // Détection Safari MacOS
+  const ua = navigator.userAgent;
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const isSafari = /^((?!chrome|android|crios|fxios|edgios|opr|samsungbrowser).)*safari/i.test(ua);
+  if (isMac && isSafari) {
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', color);
+  }
+};
+
+// Applique la couleur stockée au chargement de chaque page
+window.applyStoredThemeColor = async function() {
+  let color = localStorage.getItem('cs-theme-color') || '#007aff';
+  if (window.auth && window.auth.currentUser) {
+    try {
+      const userDoc = await window.db.collection('users').doc(window.auth.currentUser.uid).get();
+      if (userDoc.exists && userDoc.data().themeColor) {
+        color = userDoc.data().themeColor;
+        localStorage.setItem('cs-theme-color', color);
+      }
+    } catch (e) { /* ignore erreur réseau */ }
+  }
+  window.applyThemeColor(color);
+};
+
 const firebaseConfig = {
   apiKey: "AIzaSyBR_uHqxZhdIIHzhWyFNQaAQZ8uHyXf20c",
   authDomain: "carspot-d6ff9.firebaseapp.com",
@@ -42,6 +74,8 @@ window.applyStoredBg = async function() {
     window.addEventListener('DOMContentLoaded', window.applyStoredBg);
     return;
   }
+  // Applique la couleur de theme-color stockée
+  if (window.applyStoredThemeColor) window.applyStoredThemeColor();
   let grad = localStorage.getItem('cs-gradient');
   let bg = localStorage.getItem('cs-bg');
   const animate = localStorage.getItem('cs-animate-gradient') === 'true';
