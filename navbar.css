@@ -24,12 +24,9 @@
 }
 
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg);
   color: var(--text);
-  line-height: 1.5;
-  background-attachment: fixed;
   background-size: cover;
 }
 
@@ -40,18 +37,23 @@ body {
   left: 50%;
   transform: translateX(-50%);
   bottom: 0;
-  width: 92vw;
-  max-width: 480px;
+  width: 100vw;
+  max-width: 100vw;
   background: var(--card-bg);
   backdrop-filter: blur(11px);
   -webkit-backdrop-filter: blur(11px);
   border-radius: 32px;
   box-shadow: var(--nav-shadow);
-  z-index: 1000;
   margin-bottom: 14px;
-  margin-left: 8px;
-  margin-right: 8px;
   border: 1px solid rgba(128,128,128,0.08);
+  box-sizing: border-box;
+  padding-bottom: env(safe-area-inset-bottom, 14px);
+      padding-left: 0;
+    padding-right: 0;
+    width: 96vw;
+    max-width: 480px;
+    margin: 10px auto;
+
 }
 .navbar ul {
   list-style: none;
@@ -126,21 +128,53 @@ body {
   margin: 0;
 }
 
-@media (max-width: 556px) {
+
+@media (max-width: 600px) {
   .navbar {
-    width: 99vw;
-    max-width: 99vw;
-    border-radius: 18px;
-    margin-bottom: 6px;
-    padding: 0 2px;
-    margin-right: 10px
+    width: 100vw;
+    max-width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 32px;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+    width: 96vw;
+    max-width: 480px;
+    margin: 10px auto;
+    box-shadow: none;
   }
   .navbar ul {
-    height: 54px;
+    gap: 10px;
+  }
+  .navbar ul li a {
+    font-size: 1.1rem;
+    padding: 10px 0 4px 0;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+  }
+  .navbar ul li a .nav-label {
+    display: none;
   }
   .navbar ul li a .nav-ico {
-    width: 22px;
-    height: 22px;
+    font-size: 1.35em;
+    color: var(--gray);
+  }
+  .navbar ul li a.active .nav-ico,
+  .navbar ul li a:active .nav-ico {
+    color: var(--primary);
+  }
+  .navbar ul li a:active,
+  .navbar ul li a.active {
+    background: rgba(0,122,255,0.08);
+    border-radius: 12px;
   }
   .navbar ul li a.createcar {
     width: 46px;
@@ -155,46 +189,6 @@ body {
   .navbar ul li a.createcar .nav-ico {
     width: 26px;
     height: 26px;
-  }
-  .navbar ul li a .nav-label {
-    display: none;
-  }
-  .navbar ul li a .nav-emoji {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25em;
-    height: 100%;
-    margin: 0 auto;
-    min-height: 1.4em;
-  }
-}
-
-@media (max-width: 600px) {
-  .navbar {
-    width: 98vw;
-    max-width: 98vw;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 32px;
-    padding: 0 2px;
-  }
-  .navbar ul {
-    gap: 18px;
-  }
-  .navbar ul li a {
-    font-size: 0.98rem;
-    padding: 10px 0 4px 0;
-  }
-  .navbar ul li a.createcar {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    max-width: 44px;
-    max-height: 44px;
-    font-size: 1rem;
-    margin-top: -18px;
   }
 }
 

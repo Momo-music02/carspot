@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>CarSpot</title>
+  <title>CarSpot Collection X</title>
   <!-- Favicons & App Icons -->
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
@@ -17,6 +17,8 @@
   <meta name="msapplication-TileImage" content="favicon/android-chrome-192x192.png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="navbar.css">
+  <!-- Font Awesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -80,11 +82,35 @@
 </style>
   <nav class="navbar">
     <ul>
-      <li><a href="liste.html">Listes</a></li>
-      <li><a href="voitures.html">Voitures</a></li>
-      <li><a href="create-car.html" class="createcar">+</a></li>
-      <li><a href="Setting.html">Réglages</a></li>
-      <li><a href="account.html">Compte</a></li>
+      <li>
+        <a href="liste.html">
+          <span class="nav-ico"><i class="fa-solid fa-list"></i></span>
+          <span class="nav-label">Listes</span>
+        </a>
+      </li>
+      <li>
+        <a href="voitures.html">
+          <span class="nav-ico"><i class="fa-solid fa-car"></i></span>
+          <span class="nav-label">Voitures</span>
+        </a>
+      </li>
+      <li>
+        <a href="create-car.html" class="createcar">
+          <span class="nav-ico"><i class="fa-solid fa-plus"></i></span>
+        </a>
+      </li>
+      <li>
+        <a href="Setting.html">
+          <span class="nav-ico"><i class="fa-solid fa-gear"></i></span>
+          <span class="nav-label">Réglages</span>
+        </a>
+      </li>
+      <li>
+        <a href="account.html">
+          <span class="nav-ico"><i class="fa-solid fa-user"></i></span>
+          <span class="nav-label">Compte</span>
+        </a>
+      </li>
     </ul>
   </nav>
 
